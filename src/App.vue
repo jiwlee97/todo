@@ -28,5 +28,7 @@ export default defineComponent({
 }
 button {
   cursor: pointer;
+  border: none;
+  background: none;
 }
 </style>
