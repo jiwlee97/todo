@@ -23,6 +23,15 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "CalendarCell",
+  inject: ["getYear", "getMonth"],
+  computed: {
+    year() {
+      return this.getYear();
+    },
+    month() {
+      return this.getMonth();
+    },
+  },
   props: {
     type: {
       type: String,
