@@ -1,22 +1,22 @@
 <template>
   <header>
-    <img src="logo.png" class="logo-img"/>
+    <img src="logo.png" class="logo-img" />
     <h1>{{ title }}</h1>
   </header>
 </template>
 
 <script>
-import {defineComponent} from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: 'TheHeader',
+  name: "TheHeader",
   props: {
     title: {
-      type:String,
+      type: String,
       required: true,
-    }
-  }
-})
+    },
+  },
+});
 </script>
 
 <style scoped>
@@ -25,6 +25,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 16px;
 }
 .logo-img {
   width: 24px;
