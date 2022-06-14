@@ -10,13 +10,7 @@
     ></nav-date>
     <BaseTable>
       <template #thead>
-        <th class="sunday">일</th>
-        <th>월</th>
-        <th>화</th>
-        <th>수</th>
-        <th>목</th>
-        <th>금</th>
-        <th class="saturday">토</th>
+        <calendar-head></calendar-head>
       </template>
       <template #tbody>
         <tr v-for="week in weekNum" :key="week">
@@ -46,10 +40,11 @@
 import { defineComponent } from "vue";
 import NavDate from "./NavDate.vue";
 import BaseTable from "./BaseTable.vue";
+import CalendarHead from "./CalendarHead.vue";
 
 export default defineComponent({
   name: "TodoCalendar",
-  components: { NavDate, BaseTable },
+  components: { NavDate, BaseTable, CalendarHead },
   data() {
     return {
       date: new Date(),
