@@ -23,15 +23,7 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "CalendarCell",
-  inject: ["getYear", "getMonth"],
-  computed: {
-    year() {
-      return this.getYear();
-    },
-    month() {
-      return this.getMonth();
-    },
-  },
+  inject: ["showTodoList"],
   props: {
     type: {
       type: String,
@@ -44,11 +36,6 @@ export default defineComponent({
     value: {
       type: Number,
       required: true,
-    },
-  },
-  methods: {
-    showTodoList(date) {
-      console.log("showTodoList at ", this.year, this.month + 1, date);
     },
   },
 });

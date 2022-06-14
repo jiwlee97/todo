@@ -7,15 +7,25 @@
       <calendar-cell :type="type" :day="day" :value="value"></calendar-cell>
     </td>
   </tr>
+  <teleport to="#app" v-if="showTodoListDate">
+    <todo-list :date="showTodoListDate"></todo-list>
+  </teleport>
 </template>
 
 <script>
 import { defineComponent } from "vue";
 import CalendarCell from "./CalendarCell.vue";
+import TodoList from "./TodoList.vue";
 
 export default defineComponent({
   name: "CalendarBody",
-  components: { CalendarCell },
+  components: { CalendarCell, TodoList },
+  provide() {
+    return {
+      showTodoList: this.showTodoList,
+      closeTodoList: this.closeTodoList,
+    };
+  },
   inject: ["getYear", "getMonth"],
   computed: {
     year() {
@@ -31,6 +41,7 @@ export default defineComponent({
   data() {
     return {
       dateInfos: [],
+      showTodoListDate: null,
     };
   },
   watch: {
@@ -73,6 +84,12 @@ export default defineComponent({
         }
         this.dateInfos.push(weekDate);
       }
+    },
+    showTodoList(date) {
+      this.showTodoListDate = date;
+    },
+    closeTodoList() {
+      this.showTodoListDate = null;
     },
   },
   beforeMount() {
