@@ -8,8 +8,8 @@
       @previous-month="previousMonth"
       @next-month="nextMonth"
     ></nav-date>
-    <table>
-      <thead>
+    <BaseTable>
+      <template #thead>
         <th class="sunday">일</th>
         <th>월</th>
         <th>화</th>
@@ -17,8 +17,8 @@
         <th>목</th>
         <th>금</th>
         <th class="saturday">토</th>
-      </thead>
-      <tbody>
+      </template>
+      <template #tbody>
         <tr v-for="week in weekNum" :key="week">
           <td
             v-for="{ type, day, value } in dateInfos[week - 1]"
@@ -37,18 +37,19 @@
             <button class="add-button" @click="showTodoList(value)">+</button>
           </td>
         </tr>
-      </tbody>
-    </table>
+      </template>
+    </BaseTable>
   </section>
 </template>
 
 <script>
 import { defineComponent } from "vue";
 import NavDate from "./NavDate.vue";
+import BaseTable from "./BaseTable.vue";
 
 export default defineComponent({
   name: "TodoCalendar",
-  components: { NavDate },
+  components: { NavDate, BaseTable },
   data() {
     return {
       date: new Date(),
@@ -158,12 +159,6 @@ section {
 .prev,
 .next {
   color: gray;
-}
-table {
-  width: 100%;
-  border-spacing: 0;
-  border-collapse: collapse;
-  table-layout: fixed;
 }
 td {
   border: 1px solid gray;
