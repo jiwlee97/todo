@@ -9,29 +9,34 @@
     ]"
     >{{ value }}</span
   >
-  <button
-    v-if="type === 'curr'"
-    class="add-button"
-    @click="showTodoList(value)"
-  >
+  <button v-if="type === 'curr'" class="add-button" @click="openTodoList">
     +
   </button>
+  <ul v-if="todos.length">
+    <li v-for="[id, value] in todos" :key="id">{{ value.todo }}</li>
+  </ul>
+  <teleport to="#app" v-if="showTodoList">
+    <todo-list
+      :date="value"
+      :todos="todos"
+      @close-todo-list="closeTodoList"
+      @post-todo="postTodo"
+      @delete-todo="deleteTodo"
+    ></todo-list>
+  </teleport>
 </template>
 
 <script>
 import { defineComponent } from "vue";
+import axios from "axios";
+import TodoList from "./TodoList.vue";
+
+const backUrl = process.env.VUE_APP_BACK_URL;
 
 export default defineComponent({
   name: "CalendarCell",
+  components: { TodoList },
   inject: ["getYear", "getMonth"],
-  computed: {
-    year() {
-      return this.getYear();
-    },
-    month() {
-      return this.getMonth();
-    },
-  },
   props: {
     type: {
       type: String,
@@ -46,10 +51,67 @@ export default defineComponent({
       required: true,
     },
   },
-  methods: {
-    showTodoList(date) {
-      console.log("showTodoList at ", this.year, this.month + 1, date);
+  computed: {
+    year() {
+      return this.getYear();
     },
+    month() {
+      return this.getMonth();
+    },
+  },
+  data() {
+    return {
+      showTodoList: false,
+      todos: [],
+    };
+  },
+  methods: {
+    openTodoList() {
+      this.showTodoList = true;
+    },
+    closeTodoList() {
+      this.showTodoList = false;
+    },
+    getTodos() {
+      axios
+        .get(`${backUrl}/${this.year}-${this.month}-${this.value}.json`)
+        .then((response) => {
+          if (response.data) {
+            this.todos = Object.entries(response.data);
+          } else {
+            this.todos = [];
+          }
+          console.log("this.todos", this.todos);
+        });
+    },
+    postTodo(newTodo) {
+      console.log("postTodo", newTodo);
+      axios
+        .post(`${backUrl}/${this.year}-${this.month}-${this.value}.json`, {
+          todo: newTodo,
+        })
+        .then(() => {
+          this.getTodos();
+          console.log("post success!");
+        })
+        .catch((err) => {
+          console.dir(err);
+        });
+    },
+    deleteTodo(id) {
+      axios
+        .delete(
+          `${backUrl}/${this.year}-${this.month}-${this.value}/${id}.json`
+        )
+        .then(() => {
+          this.todos = this.todos.filter((todo) => {
+            return todo[0] !== id;
+          });
+        });
+    },
+  },
+  beforeMount() {
+    this.getTodos();
   },
 });
 </script>
@@ -69,5 +131,11 @@ export default defineComponent({
   position: absolute;
   top: 8px;
   right: 16px;
+}
+li {
+  background: rgb(253 224 71);
+  border-radius: 10px;
+  margin-bottom: 1px;
+  padding: 0px 7px;
 }
 </style>
