@@ -1,8 +1,6 @@
 <template>
   <section>
     <nav-date
-      :year="year"
-      :month="month"
       @previous-year="previousYear"
       @next-year="nextYear"
       @previous-month="previousMonth"
@@ -13,7 +11,7 @@
         <calendar-head></calendar-head>
       </template>
       <template #tbody>
-        <calendar-body :year="year" :month="month"></calendar-body>
+        <calendar-body></calendar-body>
       </template>
     </BaseTable>
   </section>
@@ -34,6 +32,12 @@ export default defineComponent({
       date: new Date(),
     };
   },
+  provide() {
+    return {
+      getYear: () => this.year,
+      getMonth: () => this.month,
+    };
+  },
   computed: {
     year() {
       return this.date.getFullYear();
@@ -44,32 +48,16 @@ export default defineComponent({
   },
   methods: {
     previousYear() {
-      this.date = new Date(
-        this.date.getFullYear() - 1,
-        this.date.getMonth(),
-        this.date.getDate()
-      );
+      this.date = new Date(this.year - 1, this.month, this.date.getDate());
     },
     nextYear() {
-      this.date = new Date(
-        this.date.getFullYear() + 1,
-        this.date.getMonth(),
-        this.date.getDate()
-      );
+      this.date = new Date(this.year + 1, this.month, this.date.getDate());
     },
     previousMonth() {
-      this.date = new Date(
-        this.date.getFullYear(),
-        this.date.getMonth() - 1,
-        this.date.getDate()
-      );
+      this.date = new Date(this.year, this.month - 1, this.date.getDate());
     },
     nextMonth() {
-      this.date = new Date(
-        this.date.getFullYear(),
-        this.date.getMonth() + 1,
-        this.date.getDate()
-      );
+      this.date = new Date(this.year, this.month + 1, this.date.getDate());
     },
   },
 });

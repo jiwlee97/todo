@@ -4,40 +4,28 @@
       v-for="{ type, day, value } in dateInfos[week - 1]"
       :key="type + day + value"
     >
-      <span
-        :class="[
-          type,
-          {
-            sunday: day === 0,
-            saturday: day === 6,
-          },
-        ]"
-        >{{ value }}</span
-      >
-      <button
-        v-if="type === 'curr'"
-        class="add-button"
-        @click="showTodoList(value)"
-      >
-        +
-      </button>
+      <calendar-cell :type="type" :day="day" :value="value"></calendar-cell>
     </td>
   </tr>
 </template>
 
 <script>
 import { defineComponent } from "vue";
+import CalendarCell from "./CalendarCell.vue";
 
 export default defineComponent({
   name: "CalendarBody",
-  props: {
-    year: {
-      type: Number,
-      required: true,
+  components: { CalendarCell },
+  inject: ["getYear", "getMonth"],
+  computed: {
+    year() {
+      return this.getYear();
     },
-    month: {
-      type: Number,
-      required: true,
+    month() {
+      return this.getMonth();
+    },
+    weekNum() {
+      return Math.ceil(new Date(this.year, this.month + 1, 0).getDate() / 7);
     },
   },
   data() {
@@ -51,11 +39,6 @@ export default defineComponent({
     },
     month() {
       this.calcDateInfos();
-    },
-  },
-  computed: {
-    weekNum() {
-      return Math.ceil(new Date(this.year, this.month + 1, 0).getDate() / 7);
     },
   },
   methods: {
@@ -91,9 +74,6 @@ export default defineComponent({
         this.dateInfos.push(weekDate);
       }
     },
-    showTodoList(date) {
-      console.log("showTodoList at ", this.year, this.month + 1, date);
-    },
   },
   beforeMount() {
     this.calcDateInfos();
@@ -102,16 +82,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.sunday {
-  color: rgb(239 68 68);
-}
-.saturday {
-  color: rgb(59 130 246);
-}
-.prev,
-.next {
-  color: gray;
-}
 td {
   border: 1px solid gray;
   height: 128px;
@@ -119,10 +89,5 @@ td {
   text-align: left;
   padding: 5px 7px;
   position: relative;
-}
-.add-button {
-  position: absolute;
-  top: 8px;
-  right: 16px;
 }
 </style>

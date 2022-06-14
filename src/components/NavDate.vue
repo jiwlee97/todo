@@ -14,14 +14,13 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "NavDate",
   emits: ["previous-year", "next-year", "previous-month", "next-month"],
-  props: {
-    year: {
-      type: Number,
-      required: true,
+  inject: ["getYear", "getMonth"],
+  computed: {
+    year() {
+      return this.getYear();
     },
-    month: {
-      type: Number,
-      required: true,
+    month() {
+      return this.getMonth();
     },
   },
   methods: {
@@ -35,7 +34,7 @@ export default defineComponent({
       this.$emit("previous-month");
     },
     nextMonth() {
-      this.$emit("next-year");
+      this.$emit("next-month");
     },
   },
 });
