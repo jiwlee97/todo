@@ -31,4 +31,7 @@ button {
   border: none;
   background: none;
 }
+li {
+  list-style: none;
+}
 </style>
