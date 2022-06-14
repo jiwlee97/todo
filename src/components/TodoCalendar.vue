@@ -7,6 +7,28 @@
       <button @click="nextMonth">&nbsp;&nbsp;&gt;</button>
       <button @click="nextYear">&nbsp;&nbsp;&gt;&gt;</button>
     </div>
+    <table>
+      <thead>
+        <th class="sunday">일</th>
+        <th>월</th>
+        <th>화</th>
+        <th>수</th>
+        <th>목</th>
+        <th>금</th>
+        <th class="saturday">토</th>
+      </thead>
+      <tbody>
+        <tr v-for="num in 5" :key="num">
+          <td><span>1</span></td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+          <td>7</td>
+        </tr>
+      </tbody>
+    </table>
   </section>
 </template>
 
@@ -66,7 +88,7 @@ section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 16px;
+  padding: 30px;
 }
 .date-title {
   display: flex;
@@ -74,5 +96,24 @@ section {
 button {
   border: none;
   background: none;
+}
+.sunday {
+  color: rgb(239 68 68);
+}
+.saturday {
+  color: rgb(59 130 246);
+}
+table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+td {
+  border: 1px solid gray;
+  height: 128px;
+  vertical-align: top;
+  text-align: left;
+  padding: 5px 7px;
 }
 </style>
