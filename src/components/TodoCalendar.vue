@@ -3,7 +3,7 @@
     <div class="date-title">
       <button @click="previousYear">&lt;&lt;&nbsp;&nbsp;</button>
       <button @click="previousMonth">&lt;&nbsp;&nbsp;</button>
-      <h2>{{ year }}년 {{ month }}월</h2>
+      <h2>{{ year }}년 {{ month + 1 }}월</h2>
       <button @click="nextMonth">&nbsp;&nbsp;&gt;</button>
       <button @click="nextYear">&nbsp;&nbsp;&gt;&gt;</button>
     </div>
@@ -18,14 +18,22 @@
         <th class="saturday">토</th>
       </thead>
       <tbody>
-        <tr v-for="num in 5" :key="num">
-          <td><span>1</span></td>
-          <td>2</td>
-          <td>3</td>
-          <td>4</td>
-          <td>5</td>
-          <td>6</td>
-          <td>7</td>
+        <tr v-for="week in weekNum" :key="week">
+          <td
+            v-for="{ type, day, value } in dateInfos[week - 1]"
+            :key="type + day + value"
+          >
+            <span
+              :class="[
+                type,
+                {
+                  sunday: day === 0,
+                  saturday: day === 6,
+                },
+              ]"
+              >{{ value }}</span
+            >
+          </td>
         </tr>
       </tbody>
     </table>
@@ -40,6 +48,7 @@ export default defineComponent({
   data() {
     return {
       date: new Date(),
+      dateInfos: [],
     };
   },
   computed: {
@@ -49,6 +58,17 @@ export default defineComponent({
     month() {
       return this.date.getMonth();
     },
+    weekNum() {
+      return Math.ceil(new Date(this.year, this.month + 1, 0).getDate() / 7);
+    },
+  },
+  watch: {
+    date() {
+      this.calcDateInfos();
+    },
+  },
+  beforeMount() {
+    this.calcDateInfos();
   },
   methods: {
     previousYear() {
@@ -79,6 +99,38 @@ export default defineComponent({
         this.date.getDate()
       );
     },
+    calcDateInfos() {
+      const firstDayOfWeek = new Date(this.year, this.month, 1).getDay();
+      const lastDayOfWeek = new Date(this.year, this.month + 1, 0).getDay();
+      const prevMonthDateNum = new Date(this.year, this.month, 0).getDate();
+
+      this.dateInfos = [];
+      for (let weekInd = 0; weekInd < this.weekNum; weekInd++) {
+        const weekDate = [];
+        for (let day = 0; day < 7; day++) {
+          if (weekInd === 0 && day < firstDayOfWeek) {
+            weekDate.push({
+              type: "prev",
+              day: day,
+              value: day + prevMonthDateNum - firstDayOfWeek + 1,
+            });
+          } else if (weekInd === this.weekNum - 1 && day > lastDayOfWeek) {
+            weekDate.push({
+              type: "next",
+              day: day,
+              value: day - lastDayOfWeek,
+            });
+          } else {
+            weekDate.push({
+              type: "curr",
+              day: day,
+              value: weekInd * 7 + day - firstDayOfWeek + 1,
+            });
+          }
+        }
+        this.dateInfos.push(weekDate);
+      }
+    },
   },
 });
 </script>
@@ -102,6 +154,10 @@ button {
 }
 .saturday {
   color: rgb(59 130 246);
+}
+.prev,
+.next {
+  color: gray;
 }
 table {
   width: 100%;
