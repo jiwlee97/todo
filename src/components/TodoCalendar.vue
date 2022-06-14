@@ -33,6 +33,7 @@
               ]"
               >{{ value }}</span
             >
+            <button class="add-button" @click="showTodoList(value)">+</button>
           </td>
         </tr>
       </tbody>
@@ -131,6 +132,9 @@ export default defineComponent({
         this.dateInfos.push(weekDate);
       }
     },
+    showTodoList(date) {
+      console.log("showTodoList at ", this.year, this.month + 1, date);
+    },
   },
 });
 </script>
@@ -171,5 +175,11 @@ td {
   vertical-align: top;
   text-align: left;
   padding: 5px 7px;
+  position: relative;
+}
+.add-button {
+  position: absolute;
+  top: 8px;
+  right: 16px;
 }
 </style>
