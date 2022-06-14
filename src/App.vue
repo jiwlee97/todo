@@ -1,14 +1,16 @@
 <template>
   <the-header :title="'Todo Calendar'"></the-header>
+  <todo-calendar></todo-calendar>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import TheHeader from "@/components/TheHeader.vue";
+import TodoCalendar from "./components/TodoCalendar.vue";
 
 export default defineComponent({
   name: "App",
-  components: { TheHeader },
+  components: { TheHeader, TodoCalendar },
 });
 </script>
 
@@ -23,5 +25,8 @@ export default defineComponent({
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+button {
+  cursor: pointer;
 }
 </style>
