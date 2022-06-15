@@ -81,7 +81,6 @@ export default defineComponent({
           } else {
             this.todos = [];
           }
-          console.log("this.todos", this.todos);
         });
     },
     postTodo(newTodo) {
@@ -92,7 +91,6 @@ export default defineComponent({
         })
         .then(() => {
           this.getTodos();
-          console.log("post success!");
         })
         .catch((err) => {
           console.dir(err);
