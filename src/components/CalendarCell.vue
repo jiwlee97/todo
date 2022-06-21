@@ -42,7 +42,15 @@ if (date === undefined) {
 }
 
 const props = defineProps(['type', 'day', 'value']);
-const cellDate = computed(() => new Date(date.value.getFullYear(), date.value.getMonth(), props.value));
+const cellDate = computed(() => {
+  if (props.type === 'curr') {
+    return new Date(date.value.getFullYear(), date.value.getMonth(), props.value);
+  } else if (props.type === 'prev') {
+    return new Date(date.value.getFullYear(), date.value.getMonth() - 1, props.value);
+  } else {
+    return new Date(date.value.getFullYear(), date.value.getMonth() + 1, props.value);
+  }
+});
 
 const openTodoList = () => {
   showTodoList.value = true;
