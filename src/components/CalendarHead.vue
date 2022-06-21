@@ -8,14 +8,6 @@
   <th class="saturday">토</th>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "CalendarHead",
-});
-</script>
-
 <style scoped>
 .sunday {
   color: rgb(239 68 68);

@@ -4,14 +4,6 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "RightBox",
-});
-</script>
-
 <style scoped>
 div {
   position: fixed;

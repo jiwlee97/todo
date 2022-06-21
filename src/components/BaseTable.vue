@@ -9,14 +9,6 @@
   </table>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "BaseTable",
-});
-</script>
-
 <style scoped>
 table {
   width: 100%;
