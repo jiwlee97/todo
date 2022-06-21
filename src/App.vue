@@ -3,15 +3,9 @@
   <todo-calendar></todo-calendar>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
 import TheHeader from "@/components/TheHeader.vue";
 import TodoCalendar from "./components/TodoCalendar.vue";
-
-export default defineComponent({
-  name: "App",
-  components: { TheHeader, TodoCalendar },
-});
 </script>
 
 <style>
