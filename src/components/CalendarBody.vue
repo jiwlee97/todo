@@ -11,13 +11,8 @@
 
 <script lang="ts" setup>
 import CalendarCell from "./CalendarCell.vue";
+import {IDateInfo} from "@/types/types";
 import {ref, computed, watch, inject, Ref, onBeforeMount} from 'vue';
-
-interface IDateInfo {
-  type: string;
-  day: number;
-  value: number;
-}
 
 const dateInfos = ref<IDateInfo[]>([]);
 const date: Ref<Date> | undefined = inject('date');
@@ -43,7 +38,7 @@ const calcDateInfos = () => {
 
   dateInfos.value = [];
   for (let weekInd = 0; weekInd < weekNum.value; weekInd++) {
-    const weekDate = [];
+    const weekDate: IDateInfo[] = [];
     for (let day = 0; day < 7; day++) {
       if (weekInd === 0 && day < firstDayOfWeek) {
         weekDate.push({

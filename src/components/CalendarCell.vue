@@ -29,20 +29,20 @@
 <script lang="ts" setup>
 import axios from "axios";
 import TodoList from "./TodoList.vue";
+import { ITodoItem, ITodoList } from "@/types/types";
 import {ref, computed, inject, Ref, defineProps, onBeforeMount} from 'vue';
 
 const backUrl = process.env.VUE_APP_BACK_URL;
 
 const showTodoList = ref(false);
-const todos = ref<any[]>([]);
+const todos = ref<ITodoList>([]);
 const date: Ref<Date> | undefined = inject('date');
 if (date === undefined) {
   throw Error('Could not inject date');
 }
-const year = computed(() => date.value.getFullYear());
-const month = computed(() => date.value.getMonth());
 
 const props = defineProps(['type', 'day', 'value']);
+const cellDate = computed(() => new Date(date.value.getFullYear(), date.value.getMonth(), props.value));
 
 const openTodoList = () => {
   showTodoList.value = true;
@@ -52,11 +52,13 @@ const closeTodoList = () => {
 };
 const getTodos =
     () => {
+  console.log('getTodos');
       axios
-          .get(`${backUrl}/${year.value}-${month.value}-${props.value}.json`)
+          .get(`${backUrl}/${cellDate.value}.json`)
           .then((response) => {
             if (response.data) {
               todos.value = Object.entries(response.data);
+              console.log(todos.value);
             } else {
               todos.value = [];
             }
@@ -64,7 +66,7 @@ const getTodos =
     };
 const postTodo = (newTodo: string) => {
   axios
-      .post(`${backUrl}/${year.value}-${month.value}-${props.value}.json`, {
+      .post(`${backUrl}/${cellDate.value}.json`, {
         todo: newTodo,
       })
       .then(() => {
@@ -78,10 +80,10 @@ const postTodo = (newTodo: string) => {
 const deleteTodo = (id: string) => {
   axios
       .delete(
-          `${backUrl}/${year.value}-${month.value}-${props.value}/${id}.json`
+          `${backUrl}/${cellDate.value}/${id}.json`
       )
       .then(() => {
-        todos.value = todos.value.filter((todo) => {
+        todos.value = todos.value.filter((todo: ITodoItem) => {
           return todo[0] !== id;
         });
       });
