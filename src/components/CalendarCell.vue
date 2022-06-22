@@ -42,6 +42,7 @@ if (date === undefined) {
 }
 
 const props = defineProps(['type', 'day', 'value']);
+
 const cellDate = computed(() => {
   if (props.type === 'curr') {
     return new Date(date.value.getFullYear(), date.value.getMonth(), props.value);
