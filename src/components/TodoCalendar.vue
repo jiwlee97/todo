@@ -1,10 +1,10 @@
 <template>
   <section>
     <nav-date
-      @previous-year="previousYear"
-      @next-year="nextYear"
-      @previous-month="previousMonth"
-      @next-month="nextMonth"
+        @previous-year="previousYear"
+        @next-year="nextYear"
+        @previous-month="previousMonth"
+        @next-month="nextMonth"
     ></nav-date>
     <BaseTable>
       <template #thead>
@@ -17,50 +17,32 @@
   </section>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script lang="ts" setup>
+import {ref, computed, provide} from 'vue';
 import NavDate from "./NavDate.vue";
 import BaseTable from "./BaseTable.vue";
 import CalendarHead from "./CalendarHead.vue";
 import CalendarBody from "./CalendarBody.vue";
 
-export default defineComponent({
-  name: "TodoCalendar",
-  components: { NavDate, BaseTable, CalendarHead, CalendarBody },
-  data() {
-    return {
-      date: new Date(),
-    };
-  },
-  provide() {
-    return {
-      getYear: () => this.year,
-      getMonth: () => this.month,
-    };
-  },
-  computed: {
-    year() {
-      return this.date.getFullYear();
-    },
-    month() {
-      return this.date.getMonth();
-    },
-  },
-  methods: {
-    previousYear() {
-      this.date = new Date(this.year - 1, this.month, this.date.getDate());
-    },
-    nextYear() {
-      this.date = new Date(this.year + 1, this.month, this.date.getDate());
-    },
-    previousMonth() {
-      this.date = new Date(this.year, this.month - 1, this.date.getDate());
-    },
-    nextMonth() {
-      this.date = new Date(this.year, this.month + 1, this.date.getDate());
-    },
-  },
-});
+const date = ref(new Date());
+
+const year = computed(() => date.value.getFullYear());
+const month = computed(() => date.value.getMonth());
+
+const previousYear = () => {
+  date.value = new Date(year.value - 1, month.value, date.value.getDate());
+};
+const nextYear = () => {
+  date.value = new Date(year.value + 1, month.value, date.value.getDate());
+};
+const previousMonth = () => {
+  date.value = new Date(year.value, month.value - 1, date.value.getDate());
+};
+const nextMonth = () => {
+  date.value = new Date(year.value, month.value + 1, date.value.getDate());
+};
+
+provide('date', date);
 </script>
 
 <style scoped>

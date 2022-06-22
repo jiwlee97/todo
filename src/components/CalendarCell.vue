@@ -1,13 +1,13 @@
 <template>
   <span
-    :class="[
+      :class="[
       type,
       {
         sunday: day === 0,
         saturday: day === 6,
       },
     ]"
-    >{{ value }}</span
+  >{{ value }}</span
   >
   <button v-if="type === 'curr'" class="add-button" @click="openTodoList">
     +
@@ -17,119 +17,101 @@
   </ul>
   <teleport to="#app" v-if="showTodoList">
     <todo-list
-      :date="value"
-      :todos="todos"
-      @close-todo-list="closeTodoList"
-      @post-todo="postTodo"
-      @delete-todo="deleteTodo"
+        :dateOfDate="value"
+        :todos="todos"
+        @close-todo-list="closeTodoList"
+        @post-todo="postTodo"
+        @delete-todo="deleteTodo"
     ></todo-list>
   </teleport>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script lang="ts" setup>
 import axios from "axios";
 import TodoList from "./TodoList.vue";
+import { ITodoItem, ITodoList } from "@/types/types";
+import {ref, computed, inject, Ref, defineProps, onBeforeMount} from 'vue';
 
 const backUrl = process.env.VUE_APP_BACK_URL;
 
-export default defineComponent({
-  name: "CalendarCell",
-  components: { TodoList },
-  inject: ["getYear", "getMonth"],
-  props: {
-    type: {
-      type: String,
-      required: true,
-    },
-    day: {
-      type: Number,
-      required: true,
-    },
-    value: {
-      type: Number,
-      required: true,
-    },
-  },
-  computed: {
-    year() {
-      return this.getYear();
-    },
-    month() {
-      return this.getMonth();
-    },
-  },
-  data() {
-    return {
-      showTodoList: false,
-      todos: [],
-    };
-  },
-  methods: {
-    openTodoList() {
-      this.showTodoList = true;
-    },
-    closeTodoList() {
-      this.showTodoList = false;
-    },
-    getTodos() {
+const showTodoList = ref(false);
+const todos = ref<ITodoList>([]);
+const date: Ref<Date> | undefined = inject('date');
+if (date === undefined) {
+  throw Error('Could not inject date');
+}
+
+const props = defineProps(['type', 'day', 'value']);
+const cellDate = computed(() => new Date(date.value.getFullYear(), date.value.getMonth(), props.value));
+
+const openTodoList = () => {
+  showTodoList.value = true;
+};
+const closeTodoList = () => {
+  showTodoList.value = false;
+};
+const getTodos =
+    () => {
+  console.log('getTodos');
       axios
-        .get(`${backUrl}/${this.year}-${this.month}-${this.value}.json`)
-        .then((response) => {
-          if (response.data) {
-            this.todos = Object.entries(response.data);
-          } else {
-            this.todos = [];
-          }
-        });
-    },
-    postTodo(newTodo) {
-      console.log("postTodo", newTodo);
-      axios
-        .post(`${backUrl}/${this.year}-${this.month}-${this.value}.json`, {
-          todo: newTodo,
-        })
-        .then(() => {
-          this.getTodos();
-        })
-        .catch((err) => {
-          console.dir(err);
-        });
-    },
-    deleteTodo(id) {
-      axios
-        .delete(
-          `${backUrl}/${this.year}-${this.month}-${this.value}/${id}.json`
-        )
-        .then(() => {
-          this.todos = this.todos.filter((todo) => {
-            return todo[0] !== id;
+          .get(`${backUrl}/${cellDate.value}.json`)
+          .then((response) => {
+            if (response.data) {
+              todos.value = Object.entries(response.data);
+              console.log(todos.value);
+            } else {
+              todos.value = [];
+            }
           });
+    };
+const postTodo = (newTodo: string) => {
+  axios
+      .post(`${backUrl}/${cellDate.value}.json`, {
+        todo: newTodo,
+      })
+      .then(() => {
+        getTodos();
+      })
+      .catch((err) => {
+        console.dir(err);
+      });
+};
+
+const deleteTodo = (id: string) => {
+  axios
+      .delete(
+          `${backUrl}/${cellDate.value}/${id}.json`
+      )
+      .then(() => {
+        todos.value = todos.value.filter((todo: ITodoItem) => {
+          return todo[0] !== id;
         });
-    },
-  },
-  beforeMount() {
-    this.getTodos();
-  },
-});
+      });
+}
+
+onBeforeMount(() => getTodos());
 </script>
 
 <style scoped>
 .sunday {
   color: rgb(239 68 68);
 }
+
 .saturday {
   color: rgb(59 130 246);
 }
+
 .prev,
 .next {
   color: gray;
 }
+
 .add-button {
   position: absolute;
   top: 8px;
   right: 16px;
 }
+
 li {
   background: rgb(253 224 71);
   border-radius: 10px;
